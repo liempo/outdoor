@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "264533918340",
+    "firebase_url": "https://outdoor-28bd7.firebaseio.com",
+    "project_id": "outdoor-28bd7",
+    "storage_bucket": "outdoor-28bd7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264533918340:android:2ae21ca52e9740a69f78d1",
+        "android_client_info": {
+          "package_name": "com.liempo.outdoor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264533918340-7rljqjnqjg5pbt3qnojrk97smhh5q8j5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.liempo.outdoor",
+            "certificate_hash": "fffaab52ed5a722c71b60da7b27676ca27de2327"
+          }
+        },
+        {
+          "client_id": "264533918340-0ff2cl0f1jlrs258ugro8mtd61tcbslv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApqxBcFSu5AhKfgq1853t97HcNPpDn5Mw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264533918340-0ff2cl0f1jlrs258ugro8mtd61tcbslv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
