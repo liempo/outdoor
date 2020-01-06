@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ThroughSight</string>
+
+    <string name="error_missing_permissions">Some permissions are not granted. Exiting app.</string>
 </resources>
