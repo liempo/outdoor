@@ -87,7 +87,7 @@ class SplashFragment : Fragment() {
         if (APP_PERMISSIONS.all { activity?.checkSelfPermission(it) ==
                     PackageManager.PERMISSION_GRANTED }.not()) {
             requestPermissions(APP_PERMISSIONS, RC_APP_PERMISSIONS)
-        } else startActivityForResult(picker, RC_PLACE_PICKER)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -96,6 +96,7 @@ class SplashFragment : Fragment() {
         if (resultCode == RESULT_OK) when (requestCode) {
             RC_SIGN_IN -> {
                 Timber.d("User logged in: ${auth.currentUser?.phoneNumber}")
+                startActivityForResult(picker, RC_PLACE_PICKER)
             }
 
             RC_PLACE_PICKER -> {
