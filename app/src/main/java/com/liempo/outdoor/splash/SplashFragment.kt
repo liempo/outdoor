@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.liempo.outdoor.BuildConfig
 import timber.log.Timber
 
@@ -27,6 +29,9 @@ class SplashFragment : Fragment() {
     // Will be used to check if user is logged in
     private lateinit var auth: FirebaseAuth
 
+    // Firestore, to saved initialized data
+    private lateinit var db: FirebaseFirestore
+
     // Place picker intent
     private lateinit var picker: Intent
 
@@ -36,13 +41,16 @@ class SplashFragment : Fragment() {
         // Initialize firebase auth
         auth = FirebaseAuth.getInstance()
 
+        // Initialize firebase firestore
+        db = FirebaseFirestore.getInstance()
+
         // Initialize place picker intent
         val options = PlacePickerOptions.builder()
             // Look at this fucking shit, who has typos in their code?
             .statingCameraPosition(
                 CameraPosition.Builder()
-                    .target(LatLng(14.1633243, 121.1085392))
-                    .zoom(20.0).build())
+                    .target(LatLng(14.191168,121.157478))
+                    .zoom(10.0).build())
             .build()
         picker = PlacePicker.IntentBuilder()
             .accessToken(BuildConfig.MapboxApiKey)
@@ -91,7 +99,17 @@ class SplashFragment : Fragment() {
             }
 
             RC_PLACE_PICKER -> {
-                val feature = PlacePicker.getPlace(data)
+                val place = PlacePicker.getPlace(data)!!
+                val location = GeoPoint(
+                    place.center()!!.latitude(),
+                    place.center()!!.longitude())
+
+                db.collection("home")
+                    .document(auth.currentUser!!.uid)
+                    .set(hashMapOf("location" to location))
+                    .addOnSuccessListener {
+                        Timber.i("Successfully updated database.")
+                    }
             }
         }
     }
