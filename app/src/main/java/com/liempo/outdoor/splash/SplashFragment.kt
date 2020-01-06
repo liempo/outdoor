@@ -2,6 +2,7 @@ package com.liempo.outdoor.splash
 
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,20 +13,41 @@ import android.view.View
 import android.view.ViewGroup
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import com.liempo.outdoor.BuildConfig
 import timber.log.Timber
 
 import com.liempo.outdoor.R
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
+import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
 
 class SplashFragment : Fragment() {
 
     // Will be used to check if user is logged in
     private lateinit var auth: FirebaseAuth
 
+    // Place picker intent
+    private lateinit var picker: Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize firebase auth
         auth = FirebaseAuth.getInstance()
+
+        // Initialize place picker intent
+        val options = PlacePickerOptions.builder()
+            // Look at this fucking shit, who has typos in their code?
+            .statingCameraPosition(
+                CameraPosition.Builder()
+                    .target(LatLng(14.1633243, 121.1085392))
+                    .zoom(20.0).build())
+            .build()
+        picker = PlacePicker.IntentBuilder()
+            .accessToken(BuildConfig.MapboxApiKey)
+            .placeOptions(options)
+            .build(activity)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -57,14 +79,20 @@ class SplashFragment : Fragment() {
         if (APP_PERMISSIONS.all { activity?.checkSelfPermission(it) ==
                     PackageManager.PERMISSION_GRANTED }.not()) {
             requestPermissions(APP_PERMISSIONS, RC_APP_PERMISSIONS)
-        }
+        } else startActivityForResult(picker, RC_PLACE_PICKER)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RC_SIGN_IN) {
-            Timber.d("User logged in: ${auth.currentUser?.phoneNumber}")
+        if (resultCode == RESULT_OK) when (requestCode) {
+            RC_SIGN_IN -> {
+                Timber.d("User logged in: ${auth.currentUser?.phoneNumber}")
+            }
+
+            RC_PLACE_PICKER -> {
+                val feature = PlacePicker.getPlace(data)
+            }
         }
     }
 
@@ -80,12 +108,12 @@ class SplashFragment : Fragment() {
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         activity?.finish()
                     }.show()
-        }
+        } else startActivityForResult(picker, RC_PLACE_PICKER)
     }
 
     companion object {
         private const val RC_SIGN_IN = 2934
-
+        private const val RC_PLACE_PICKER = 4231
         private const val RC_APP_PERMISSIONS = 5123
         private val APP_PERMISSIONS = arrayOf(
                 Manifest.permission.RECORD_AUDIO,
