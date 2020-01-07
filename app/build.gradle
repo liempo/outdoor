@@ -59,10 +59,9 @@ dependencies {
     // Mapbox places sdk
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v8:0.9.0'
 
-    // Custom views
+    // Custom views and activities
     implementation 'com.github.liempo:rmsview:alpha-1.0'
-    implementation 'com.github.bumptech.glide:glide:4.10.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    implementation "com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.4"
 
     // Network calls and json parsing
     implementation 'com.squareup.okhttp3:okhttp:4.2.1'
