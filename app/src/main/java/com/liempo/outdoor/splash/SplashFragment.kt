@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -87,7 +88,8 @@ class SplashFragment : Fragment() {
         if (APP_PERMISSIONS.all { activity?.checkSelfPermission(it) ==
                     PackageManager.PERMISSION_GRANTED }.not()) {
             requestPermissions(APP_PERMISSIONS, RC_APP_PERMISSIONS)
-        }
+        } else findNavController().navigate(
+            SplashFragmentDirections.startHome())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,6 +112,8 @@ class SplashFragment : Fragment() {
                     .set(hashMapOf("location" to location))
                     .addOnSuccessListener {
                         Timber.i("Successfully updated database.")
+                        findNavController().navigate(
+                            SplashFragmentDirections.startHome())
                     }
             }
         }
