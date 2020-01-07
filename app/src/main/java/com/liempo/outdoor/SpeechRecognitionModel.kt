@@ -1,18 +1,14 @@
 package com.liempo.outdoor
 
-import android.Manifest.permission.RECORD_AUDIO
 import android.app.Application
 import android.content.Intent
-import android.content.pm.PackageManager.*
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent.*
 import android.speech.SpeechRecognizer.*
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 
-@Suppress("unused")
 class SpeechRecognitionModel(application: Application):
     AndroidViewModel(application), RecognitionListener {
 
@@ -26,8 +22,6 @@ class SpeechRecognitionModel(application: Application):
             setRecognitionListener(this@SpeechRecognitionModel)
         }
 
-    var isPermissionGranted = checkPermission(application)
-
     private val intent by lazy {
         Intent(ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(EXTRA_LANGUAGE_MODEL, LANGUAGE_MODEL_FREE_FORM)
@@ -36,10 +30,6 @@ class SpeechRecognitionModel(application: Application):
         }
     }
 
-    private fun checkPermission(context: Application): Boolean =
-        ContextCompat.checkSelfPermission(
-            context, RECORD_AUDIO) == PERMISSION_GRANTED
-
     fun startListening() {
         recognizer.startListening(intent)
         notifyListening(isRecording = true)
@@ -47,7 +37,6 @@ class SpeechRecognitionModel(application: Application):
 
     fun stopListening() {
         recognizer.stopListening()
-        notifyListening(isRecording = false)
     }
 
     private fun notifyListening(isRecording: Boolean) {
