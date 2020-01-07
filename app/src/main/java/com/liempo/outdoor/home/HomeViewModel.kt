@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beust.klaxon.Klaxon
 import com.liempo.outdoor.BuildConfig
+import com.mapbox.api.directions.v5.DirectionsCriteria
+import com.mapbox.api.directions.v5.MapboxDirections
+import com.mapbox.geojson.Point
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,6 +17,7 @@ import okhttp3.Request
 class HomeViewModel : ViewModel() {
 
     internal val place: MutableLiveData<String?> = MutableLiveData()
+    internal val routeJson: MutableLiveData<String?> = MutableLiveData()
 
     internal fun extractKeyword(text: String?): String? {
         var result = text
@@ -49,6 +53,32 @@ class HomeViewModel : ViewModel() {
 
                 return@withContext if (response.candidates.isNotEmpty())
                         response.candidates[0].place_id else null
+            }
+        }
+    }
+
+    internal fun getBestRoute(origin: Point, destination: Point) {
+        viewModelScope.launch {
+
+            val builder = MapboxDirections.builder()
+                .accessToken(BuildConfig.MapboxApiKey)
+                .origin(origin)
+                .destination(destination)
+                .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
+                .overview(DirectionsCriteria.OVERVIEW_FULL)
+                .voiceInstructions(true)
+                .bannerInstructions(true)
+                // I don' know what the
+                // fuck does this param do
+                .steps(true)
+
+            routeJson.value = withContext(Dispatchers.IO) {
+                // first route is the best route
+                val routes = builder.build().executeCall().body()?.routes()
+
+                // return best route, if route is empty return null
+                return@withContext if (routes.isNullOrEmpty().not())
+                    routes!![0].toJson() else null
             }
         }
     }

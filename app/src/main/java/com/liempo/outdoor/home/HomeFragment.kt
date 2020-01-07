@@ -11,11 +11,14 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
 
 import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
+import com.mapbox.geojson.Point
 import kotlinx.android.synthetic.main.home_fragment.*
 import timber.log.Timber
 
@@ -85,6 +88,27 @@ class HomeFragment : Fragment() {
             if (it == null) return@Observer
 
             Timber.i("PlaceId: $it")
+
+            // Get place LatLng
+            val request = FetchPlaceRequest
+                .builder(it, listOf(Place.Field.LAT_LNG)).build()
+            places.fetchPlace(request).addOnSuccessListener { place ->
+                val dest = Point.fromLngLat(
+                    place.place.latLng!!.longitude,
+                    place.place.latLng!!.latitude)
+
+                fused.lastLocation.addOnSuccessListener { loc ->
+                    val origin = Point.fromLngLat(
+                        loc.longitude, loc.latitude
+                    )
+
+                    model.getBestRoute(origin, dest)
+                }
+            }
+        })
+
+        model.routeJson.observe(this, Observer {
+            // TODO start
         })
     }
 
