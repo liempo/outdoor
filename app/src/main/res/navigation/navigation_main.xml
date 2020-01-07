@@ -9,18 +9,39 @@
         android:id="@+id/splashFragment"
         android:name="com.liempo.outdoor.splash.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
+
         <action
             android:id="@+id/startHome"
             app:destination="@id/homeFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/navigation_main"
             app:popUpToInclusive="true" />
+
     </fragment>
+
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.liempo.outdoor.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/home_fragment" />
+        tools:layout="@layout/home_fragment">
+
+        <action
+            android:id="@+id/startNavigation"
+            app:destination="@id/navigationActivity" />
+
+    </fragment>
+
+    <activity
+        android:id="@+id/navigationActivity"
+        android:name="com.liempo.outdoor.navigation.NavigationActivity"
+        android:label="activity_navigation"
+        tools:layout="@layout/activity_navigation">
+
+        <argument
+            android:name="routeJson"
+            app:argType="string" />
+
+    </activity>
 
 </navigation>

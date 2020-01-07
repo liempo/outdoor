@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
@@ -91,8 +92,13 @@ class HomeFragment : Fragment() {
 
             // Get place LatLng
             val request = FetchPlaceRequest
-                .builder(it, listOf(Place.Field.LAT_LNG)).build()
+                .builder(it, listOf(
+                    Place.Field.NAME,
+                    Place.Field.LAT_LNG)
+                ).build()
             places.fetchPlace(request).addOnSuccessListener { place ->
+                detected_text.text = place.place.name!!
+
                 val dest = Point.fromLngLat(
                     place.place.latLng!!.longitude,
                     place.place.latLng!!.latitude)
@@ -104,11 +110,19 @@ class HomeFragment : Fragment() {
 
                     model.getBestRoute(origin, dest)
                 }
+            }.addOnFailureListener { e ->
+                Timber.e(e, "Error Fetching $it")
+                rms_view.stop(); rms_view.play()
             }
         })
 
         model.routeJson.observe(this, Observer {
-            // TODO start
+            Timber.i("Route: $it")
+
+            if (it == null) return@Observer
+            findNavController().navigate(
+                HomeFragmentDirections.startNavigation(it)
+            )
         })
     }
 
