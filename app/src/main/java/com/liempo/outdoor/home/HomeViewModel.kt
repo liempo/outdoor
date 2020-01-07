@@ -13,7 +13,7 @@ import okhttp3.Request
 
 class HomeViewModel : ViewModel() {
 
-    internal val placeIds: MutableLiveData<List<String>> = MutableLiveData()
+    internal val place: MutableLiveData<String?> = MutableLiveData()
 
     internal fun extractKeyword(text: String?): String? {
         var result = text
@@ -37,7 +37,7 @@ class HomeViewModel : ViewModel() {
                     "&key=${BuildConfig.PlacesApiKey}"
             val request = Request.Builder().url(url).build()
 
-            placeIds.value =  withContext(Dispatchers.IO) {
+            place.value =  withContext(Dispatchers.IO) {
                 val raw = client.newCall(request).execute()
                 val body = raw.body!!.string()
 
@@ -47,9 +47,8 @@ class HomeViewModel : ViewModel() {
                 val response = Klaxon().
                     parse<PlaceSearchResponse>(body)!!
 
-                return@withContext response.candidates.map {
-                    it.place_id
-                }
+                return@withContext if (response.candidates.isNotEmpty())
+                        response.candidates[0].place_id else null
             }
         }
     }

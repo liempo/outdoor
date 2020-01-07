@@ -81,8 +81,10 @@ class HomeFragment : Fragment() {
             }
         })
 
-        model.placeIds.observe(this, Observer {
-            it.forEach { id -> Timber.i("PlaceId: $id") }
+        model.place.observe(this, Observer {
+            if (it == null) return@Observer
+
+            Timber.i("PlaceId: $it")
         })
     }
 
