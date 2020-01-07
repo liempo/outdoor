@@ -62,6 +62,9 @@ dependencies {
     // Firebase stuff
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.3.1'
+    implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
+    implementation 'com.google.firebase:firebase-ml-vision-object-detection-model:19.0.3'
+
 
     // Mapbox places sdk
     implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places-v8:0.9.0'
@@ -69,8 +72,12 @@ dependencies {
     // Custom views and activities
     implementation 'com.github.liempo:rmsview:alpha-1.0'
     implementation "com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.4"
+    api 'com.otaliastudios:cameraview:2.6.0'
 
     // Network calls and json parsing
     implementation 'com.squareup.okhttp3:okhttp:4.2.1'
     implementation 'com.beust:klaxon:5.0.1'
+
+    // Misc tools
+    implementation 'com.github.pwittchen:gesture-rx2:0.1.0'
 }
