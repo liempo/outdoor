@@ -10,11 +10,14 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Observer
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
 
 import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
 import kotlinx.android.synthetic.main.home_fragment.*
+import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
@@ -22,12 +25,14 @@ class HomeFragment : Fragment() {
     private lateinit var speech: SpeechRecognitionModel
 
     private lateinit var fused: FusedLocationProviderClient
+    private lateinit var places: PlacesClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize fused
+        // Initialize fused and places sdk
         fused = LocationServices.getFusedLocationProviderClient(requireContext())
+        places = Places.createClient(requireContext())
     }
 
     override fun onCreateView(
@@ -59,19 +64,25 @@ class HomeFragment : Fragment() {
         speech.isListening.observe(this, Observer {
             // Ignore if still listening
             if (it) return@Observer
+            Timber.i("triggered")
 
             // Animate rms view, loading
             rms_view.transform()
 
-            // Get keyword
+            // Get keyword else exit
             val keyword = model.extractKeyword(
                 speech.recognizedText.value)
+                ?: return@Observer
 
             // Get the last known location
-            fused.lastLocation.addOnSuccessListener { location ->
-
+            fused.lastLocation.addOnSuccessListener { loc ->
+                model.findPlacesNearby(keyword,
+                    loc.latitude, loc.longitude)
             }
+        })
 
+        model.placeIds.observe(this, Observer {
+            it.forEach { id -> Timber.i("PlaceId: $id") }
         })
     }
 
@@ -86,6 +97,12 @@ class HomeFragment : Fragment() {
             getColor(requireContext(), R.color.colorPrimary),
             getColor(requireContext(), R.color.colorAccent)
         )); rms_view.play()
+
+        fab.setOnClickListener {
+            if (speech.isListening.value == true) {
+                speech.stopListening()
+            } else speech.startListening()
+        }
 
     }
 
