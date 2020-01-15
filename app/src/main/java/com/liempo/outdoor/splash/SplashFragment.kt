@@ -88,8 +88,10 @@ class SplashFragment : Fragment() {
         if (APP_PERMISSIONS.all { activity?.checkSelfPermission(it) ==
                     PackageManager.PERMISSION_GRANTED }.not()) {
             requestPermissions(APP_PERMISSIONS, RC_APP_PERMISSIONS)
-        } else findNavController().navigate(
-            SplashFragmentDirections.startHome())
+        } else {
+            findNavController().navigate(
+                SplashFragmentDirections.startHome())
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -112,9 +114,9 @@ class SplashFragment : Fragment() {
                     .set(hashMapOf("location" to location))
                     .addOnSuccessListener {
                         Timber.i("Successfully updated database.")
-                        findNavController().navigate(
-                            SplashFragmentDirections.startHome())
                     }
+
+                findNavController().navigate(SplashFragmentDirections.startHome())
             }
         }
     }
@@ -131,7 +133,7 @@ class SplashFragment : Fragment() {
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         activity?.finish()
                     }.show()
-        } else startActivityForResult(picker, RC_PLACE_PICKER)
+        }
     }
 
     companion object {
