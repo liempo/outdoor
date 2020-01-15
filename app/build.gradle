@@ -87,4 +87,5 @@ dependencies {
 
     // Misc tools
     implementation 'com.github.pwittchen:gesture-rx2:0.1.0'
+    implementation 'com.github.safetysystemtechnology:android-shake-detector:v1.2'
 }
