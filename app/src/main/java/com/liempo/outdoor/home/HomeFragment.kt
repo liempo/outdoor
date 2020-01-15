@@ -16,6 +16,9 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 
 import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
@@ -74,14 +77,29 @@ class HomeFragment : Fragment() {
             rms_view.transform()
 
             // Get keyword else exit
-            val keyword = model.extractKeyword(
-                speech.recognizedText.value)
-                ?: return@Observer
+            val text = speech.recognizedText.value
+            if (text == "go home") {
+                FirebaseFirestore.getInstance().collection("home")
+                    .document(FirebaseAuth.getInstance().uid!!).get()
+                    .addOnSuccessListener { snapshot ->
+                        val home = snapshot["location"] as GeoPoint
 
-            // Get the last known location
-            fused.lastLocation.addOnSuccessListener { loc ->
-                model.findPlacesNearby(keyword,
-                    loc.latitude, loc.longitude)
+                        fused.lastLocation.addOnSuccessListener { loc ->
+                            model.getBestRoute(
+                                Point.fromLngLat(loc.longitude, loc.latitude),
+                                Point.fromLngLat(home.longitude, home.latitude)
+                            )
+                        }
+                    }
+            } else {
+                val keyword = model.extractKeyword(text)
+                    ?: return@Observer
+
+                // Get the last known location
+                fused.lastLocation.addOnSuccessListener { loc ->
+                    model.findPlacesNearby(keyword,
+                        loc.latitude, loc.longitude)
+                }
             }
         })
 
