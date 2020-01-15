@@ -8,7 +8,7 @@ import androidx.navigation.navArgs
 import com.github.pwittchen.gesture.library.Gesture
 import com.github.pwittchen.gesture.library.GestureListener
 import com.liempo.outdoor.R
-import com.liempo.outdoor.detection.CameraActivity
+import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener
@@ -110,7 +110,7 @@ class NavigationActivity : AppCompatActivity(),
 
     override fun onMultiTap(motionEvent: MotionEvent?, clicks: Int) {
         startActivity(Intent(this,
-            CameraActivity::class.java))
+            DetectorActivity::class.java))
     }
 
 }
