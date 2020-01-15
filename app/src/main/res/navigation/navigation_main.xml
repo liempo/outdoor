@@ -29,6 +29,9 @@
         <action
             android:id="@+id/startNavigation"
             app:destination="@id/navigationActivity" />
+        <action
+            android:id="@+id/openSettings"
+            app:destination="@id/settingsFragment" />
 
     </fragment>
 
@@ -43,5 +46,9 @@
             app:argType="string" />
 
     </activity>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.liempo.outdoor.SettingsFragment"
+        android:label="SettingsFragment" />
 
 </navigation>

@@ -144,6 +144,10 @@ class HomeFragment : Fragment() {
             } else speech.startListening()
         }
 
+        bar.setNavigationOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.openSettings())
+        }
+
     }
 
 }
