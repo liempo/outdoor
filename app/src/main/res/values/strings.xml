@@ -3,4 +3,6 @@
 
     <string name="error_missing_permissions">Some permissions are not granted. Exiting app.</string>
     <string name="action_logout">Logout</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_profile">Profile</string>
 </resources>
