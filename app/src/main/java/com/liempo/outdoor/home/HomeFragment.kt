@@ -61,7 +61,8 @@ class HomeFragment : Fragment() {
         })
 
         speech.error.observe(this, Observer {
-            Snackbar.make(bar, it, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(container, it,
+                Snackbar.LENGTH_SHORT).show()
         })
 
         speech.rmsValue.observe(this, Observer {
@@ -156,27 +157,15 @@ class HomeFragment : Fragment() {
             getColor(requireContext(), R.color.colorAccent)
         )); rms_view.play()
 
-        fab.setOnClickListener {
+        rms_view.setOnClickListener {
             if (speech.isListening.value == true) {
                 speech.stopListening()
             } else speech.startListening()
         }
 
-        bar.setNavigationOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.openSettings())
-        }
-
-        bar.setOnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.menu_logout -> {
-                    FirebaseAuth.getInstance().signOut()
-                    findNavController().navigate(
-                        HomeFragmentDirections.logout())
-                }
-
-            }
-
-            true
+        settings_cardview.setOnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.openSettings())
         }
 
     }
