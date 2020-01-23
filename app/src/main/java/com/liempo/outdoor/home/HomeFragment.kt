@@ -1,5 +1,6 @@
 package com.liempo.outdoor.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
@@ -59,6 +60,7 @@ class HomeFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.home_fragment,
         container, false)
 
+    @SuppressLint("DefaultLocale")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         model = ViewModelProviders.of(this)
@@ -90,7 +92,7 @@ class HomeFragment : Fragment() {
 
             // Get keyword else exit
             val text = speech.recognizedText.value
-            if (text == "go home") {
+            if (text?.toLowerCase() == "go home") {
                 FirebaseFirestore.getInstance().collection("home")
                     .document(FirebaseAuth.getInstance().uid!!).get()
                     .addOnSuccessListener { snapshot ->
@@ -212,7 +214,12 @@ class HomeFragment : Fragment() {
                 override fun onLongPress(e: MotionEvent?) {
                     vibrator.vibrate(createOneShot(
                         300, DEFAULT_AMPLITUDE))
+
+                    // Change command from here
                     speech.recognizedText.value = "Go home"
+
+                    // Trigger route generation
+                    speech.isListening.value = false
                 }
 
             })
