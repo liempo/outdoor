@@ -91,6 +91,8 @@ class HomeFragment : Fragment() {
                                 Point.fromLngLat(home.longitude, home.latitude)
                             )
                         }
+
+                        rms_view.startIdleInterpolation()
                     }
             } else {
                 val keyword = model.extractKeyword(text)
@@ -100,8 +102,11 @@ class HomeFragment : Fragment() {
                 fused.lastLocation.addOnSuccessListener { loc ->
                     model.findPlacesNearby(keyword,
                         loc.latitude, loc.longitude)
+
+                    rms_view.startIdleInterpolation()
                 }
             }
+
         })
 
         model.place.observe(this, Observer {
@@ -160,7 +165,10 @@ class HomeFragment : Fragment() {
         rms_view.setOnClickListener {
             if (speech.isListening.value == true) {
                 speech.stopListening()
-            } else speech.startListening()
+            } else {
+                speech.startListening()
+                rms_view.startRmsInterpolation()
+            }
         }
 
         settings_cardview.setOnClickListener {

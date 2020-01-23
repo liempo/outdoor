@@ -11,6 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:layout_margin="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,8 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="24dp"
-            android:gravity="center"
-            android:textSize="24sp" />
+            android:text="@string/msg_detected_text"
+            android:gravity="center" />
 
     </androidx.cardview.widget.CardView>
 
@@ -31,6 +34,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toTopOf="@+id/rms_cardview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,18 +47,18 @@
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:layout_margin="24dp"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toTopOf="@+id/settings_cardview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gesture_cardview">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.liempo.rmsview.RmsView
             android:id="@+id/rms_view"
             android:layout_width="match_parent"
             android:layout_height="144dp"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@id/settings_cardview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -63,21 +69,24 @@
         android:id="@+id/profile_cardview"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_margin="24dp"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_profile"
+            android:layout_gravity="center"
             android:drawableStart="@drawable/ic_person_gray_24dp"
             android:drawablePadding="8dp"
-            android:layout_gravity="center"/>
+            android:gravity="center"
+            android:text="@string/title_profile" />
 
     </androidx.cardview.widget.CardView>
 
@@ -85,21 +94,24 @@
         android:id="@+id/settings_cardview"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_margin="24dp"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline" >
+        app:layout_constraintStart_toStartOf="@+id/guideline">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_settings"
+            android:layout_gravity="center"
             android:drawableStart="@drawable/ic_settings_gray_24dp"
             android:drawablePadding="8dp"
-            android:layout_gravity="center"/>
+            android:gravity="center"
+            android:text="@string/title_settings" />
 
     </androidx.cardview.widget.CardView>
 
