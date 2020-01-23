@@ -1,11 +1,15 @@
 package com.liempo.outdoor.home
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.os.VibrationEffect.*
+import android.os.Vibrator
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -15,7 +19,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -34,12 +37,19 @@ class HomeFragment : Fragment() {
     private lateinit var fused: FusedLocationProviderClient
     private lateinit var places: PlacesClient
 
+    // Will be used to please horny women
+    private lateinit var vibrator: Vibrator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize fused and places sdk
         fused = LocationServices.getFusedLocationProviderClient(requireContext())
         places = Places.createClient(requireContext())
+
+        // Initialize vibrator 2000
+        vibrator = context?.getSystemService(
+            Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     override fun onCreateView(
@@ -61,8 +71,8 @@ class HomeFragment : Fragment() {
         })
 
         speech.error.observe(this, Observer {
-            Snackbar.make(container, it,
-                Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(context, "Error: $it",
+                Toast.LENGTH_SHORT).show()
         })
 
         speech.rmsValue.observe(this, Observer {
@@ -106,7 +116,6 @@ class HomeFragment : Fragment() {
                     rms_view.startIdleInterpolation()
                 }
             }
-
         })
 
         model.place.observe(this, Observer {
@@ -176,6 +185,16 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.openSettings())
         }
 
+        gesture_cardview.setOnLongClickListener {
+            vibrator.vibrate(createOneShot(
+                500, DEFAULT_AMPLITUDE))
+            true
+        }
+
+        gesture_cardview.setOnClickListener {
+            vibrator.vibrate(createOneShot(
+                100, DEFAULT_AMPLITUDE))
+        }
     }
 
 }
