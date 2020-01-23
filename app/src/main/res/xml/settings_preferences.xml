@@ -26,8 +26,10 @@
             app:defaultValue="Guardian"
             app:useSimpleSummaryProvider="true"/>
 
-
-
     </PreferenceCategory>
+
+    <Preference
+        app:title="Log Out"
+        app:key="pref_logout" />
 
 </androidx.preference.PreferenceScreen>

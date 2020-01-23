@@ -3,6 +3,7 @@ package com.liempo.outdoor
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -46,6 +47,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("pref_home")?.setOnPreferenceClickListener {
             startActivityForResult(picker, RC_PLACE_PICKER)
+
+            true
+        }
+
+        findPreference<Preference>("key_logout")?.setOnPreferenceClickListener {
+            FirebaseAuth.getInstance().signOut()
+            findNavController().navigate(
+                SettingsFragmentDirections.logout())
 
             true
         }
