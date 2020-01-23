@@ -1,14 +1,14 @@
 package com.liempo.outdoor.home
 
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.VibrationEffect.*
 import android.os.Vibrator
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Observer
@@ -25,6 +25,7 @@ import com.google.firebase.firestore.GeoPoint
 
 import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
+import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.geojson.Point
 import kotlinx.android.synthetic.main.home_fragment.*
 import timber.log.Timber
@@ -110,8 +111,10 @@ class HomeFragment : Fragment() {
 
                 // Get the last known location
                 fused.lastLocation.addOnSuccessListener { loc ->
-                    model.findPlacesNearby(keyword,
-                        loc.latitude, loc.longitude)
+                    model.findPlacesNearby(
+                        keyword,
+                        loc.latitude, loc.longitude
+                    )
 
                     rms_view.startIdleInterpolation()
                 }
@@ -120,8 +123,6 @@ class HomeFragment : Fragment() {
 
         model.place.observe(this, Observer {
             if (it == null) return@Observer
-
-            Timber.i("PlaceId: $it")
 
             // Get place LatLng
             val request = FetchPlaceRequest
@@ -185,16 +186,41 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.openSettings())
         }
 
-        gesture_cardview.setOnLongClickListener {
-            vibrator.vibrate(createOneShot(
-                500, DEFAULT_AMPLITUDE))
-            true
+        val detector = GestureDetector(
+            requireContext(), object : SimpleOnGestureListener() {
+
+                override fun onDoubleTap(e: MotionEvent?): Boolean {
+                    vibrator.vibrate(createWaveform(
+                        longArrayOf(50, 50), -1))
+
+                    startActivity(Intent(requireActivity(),
+                            DetectorActivity::class.java))
+                    return super.onDoubleTap(e)
+                }
+
+                override fun onShowPress(e: MotionEvent?) {
+                    vibrator.vibrate(createOneShot(
+                        50, DEFAULT_AMPLITUDE))
+                }
+
+                override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                    vibrator.vibrate(createOneShot(
+                        100, DEFAULT_AMPLITUDE))
+                    return true
+                }
+
+                override fun onLongPress(e: MotionEvent?) {
+                    vibrator.vibrate(createOneShot(
+                        300, DEFAULT_AMPLITUDE))
+                    speech.recognizedText.value = "Go home"
+                }
+
+            })
+
+        gesture_cardview.setOnTouchListener { _, event ->
+            detector.onTouchEvent(event)
         }
 
-        gesture_cardview.setOnClickListener {
-            vibrator.vibrate(createOneShot(
-                100, DEFAULT_AMPLITUDE))
-        }
     }
 
 }
