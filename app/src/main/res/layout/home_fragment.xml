@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:theme="@style/BottomAppBarFix"
+        app:menu="@menu/menu_bottom_app_bar"
         app:navigationIcon="@drawable/ic_menu_white_24dp"
         app:backgroundTint="@color/colorPrimary"
         app:fabAlignmentMode="center" />

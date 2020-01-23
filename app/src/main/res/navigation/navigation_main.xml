@@ -50,5 +50,11 @@
         android:id="@+id/settingsFragment"
         android:name="com.liempo.outdoor.SettingsFragment"
         android:label="SettingsFragment" />
+    <action
+        android:id="@+id/logout"
+        app:destination="@id/splashFragment"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/navigation_main"
+        app:popUpToInclusive="false" />
 
 </navigation>

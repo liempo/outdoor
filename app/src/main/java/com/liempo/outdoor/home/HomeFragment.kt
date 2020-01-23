@@ -166,6 +166,19 @@ class HomeFragment : Fragment() {
             findNavController().navigate(HomeFragmentDirections.openSettings())
         }
 
+        bar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.menu_logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    findNavController().navigate(
+                        HomeFragmentDirections.logout())
+                }
+
+            }
+
+            true
+        }
+
     }
 
 }
