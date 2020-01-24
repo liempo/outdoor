@@ -4,4 +4,4 @@
  - [ ] Feilds in Profile (photo and additional contact number)
  - [ ] Globalize shake to text
  - [ ] Off route 
- - [ ] Too near and near
+ - [x] Too near and near
