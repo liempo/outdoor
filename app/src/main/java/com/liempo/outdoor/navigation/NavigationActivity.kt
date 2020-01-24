@@ -1,17 +1,15 @@
 package com.liempo.outdoor.navigation
 
-import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.telephony.SmsManager
+import android.view.GestureDetector
+import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import androidx.navigation.navArgs
-import com.github.pwittchen.gesture.library.Gesture
-import com.github.pwittchen.gesture.library.GestureListener
 import com.google.firebase.auth.FirebaseAuth
 import com.liempo.outdoor.R
-import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener
@@ -23,11 +21,9 @@ import safety.com.br.android_shake_detector.core.ShakeOptions
 import timber.log.Timber
 
 class NavigationActivity : AppCompatActivity(),
-    NavigationListener, ProgressChangeListener, GestureListener {
+    NavigationListener, ProgressChangeListener {
 
     private val args: NavigationActivityArgs by navArgs()
-
-    private lateinit var gesture: Gesture
 
     private var emergency = false
 
@@ -44,7 +40,6 @@ class NavigationActivity : AppCompatActivity(),
             emergency = true
         }
 
-
         // Initialize navigation view
         nav_view.onCreate(savedInstanceState)
         nav_view.initialize {
@@ -60,10 +55,19 @@ class NavigationActivity : AppCompatActivity(),
             nav_view.startNavigation(builder.build())
         }
 
-        // Setup gesture
-        gesture = Gesture().apply {
-            addListener(this@NavigationActivity)
+        val detector = GestureDetector(
+            this, object : SimpleOnGestureListener() {
+
+            override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+                finish()
+                return super.onDoubleTapEvent(e)
+            }
+        })
+
+        nav_view.setOnTouchListener { _, event ->
+            detector.onTouchEvent(event)
         }
+
     }
 
     override fun onNavigationFinished() {
@@ -78,12 +82,6 @@ class NavigationActivity : AppCompatActivity(),
     override fun onCancelNavigation() {
         nav_view.stopNavigation()
         onBackPressed()
-    }
-
-
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        gesture.dispatchTouchEvent(event)
-        return super.dispatchTouchEvent(event)
     }
 
     override fun onStart() {
@@ -114,23 +112,6 @@ class NavigationActivity : AppCompatActivity(),
     override fun onLowMemory() {
         super.onLowMemory()
         nav_view.onLowMemory()
-    }
-
-    override fun onDrag(motionEvent: MotionEvent?) {}
-
-    override fun onTap(motionEvent: MotionEvent?) {}
-
-    override fun onPress(motionEvent: MotionEvent?) {}
-
-    override fun onRelease(motionEvent: MotionEvent?) {}
-
-    override fun onMove(motionEvent: MotionEvent?) {}
-
-    override fun onLongPress(motionEvent: MotionEvent?) {}
-
-    override fun onMultiTap(motionEvent: MotionEvent?, clicks: Int) {
-        startActivity(Intent(this,
-            DetectorActivity::class.java))
     }
 
     override fun onProgressChange(location: Location?, routeProgress: RouteProgress?) {
