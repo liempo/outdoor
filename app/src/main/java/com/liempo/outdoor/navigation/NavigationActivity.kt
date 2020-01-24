@@ -1,5 +1,6 @@
 package com.liempo.outdoor.navigation
 
+import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.MotionEvent
 import androidx.navigation.navArgs
 import com.google.firebase.auth.FirebaseAuth
 import com.liempo.outdoor.R
+import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener
@@ -59,7 +61,8 @@ class NavigationActivity : AppCompatActivity(),
             this, object : SimpleOnGestureListener() {
 
             override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
-                finish()
+                startActivity(Intent(this@NavigationActivity,
+                    DetectorActivity::class.java))
                 return super.onDoubleTapEvent(e)
             }
         })
@@ -75,9 +78,7 @@ class NavigationActivity : AppCompatActivity(),
         onBackPressed()
     }
 
-    override fun onNavigationRunning() {
-
-    }
+    override fun onNavigationRunning() {}
 
     override fun onCancelNavigation() {
         nav_view.stopNavigation()
