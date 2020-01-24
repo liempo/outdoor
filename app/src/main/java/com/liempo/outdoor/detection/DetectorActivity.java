@@ -58,9 +58,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private static final int TF_OD_API_INPUT_SIZE = 300;
     private static final boolean TF_OD_API_IS_QUANTIZED = true;
     private static final String TF_OD_API_MODEL_FILE = "detect.tflite";
-    private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/labelmap.txt";
+    private static final String TF_OD_API_LABELS_FILE
+            = "file:///android_asset/labelmap.txt";
+
     // Minimum detection confidence to track a detection.
-    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.6f;
+    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.7f;
     private static final boolean MAINTAIN_ASPECT = false;
     private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
     private static final boolean SAVE_PREVIEW_BITMAP = false;
@@ -115,10 +117,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         } catch (final IOException e) {
             e.printStackTrace();
             Timber.e(e, "Exception initializing classifier!");
-            Toast toast =
-                    Toast.makeText(
-                            getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Classifier could not be initialized",
+                    Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -167,7 +169,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         computingDetection = true;
         Timber.i("Preparing image " + currTimestamp + " for detection in bg thread.");
 
-        rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
+        rgbFrameBitmap.setPixels(getRgbBytes(),
+                0, previewWidth, 0, 0,
+                previewWidth, previewHeight);
 
         readyForNextImage();
 
@@ -206,13 +210,17 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             float area = result.getLocation().width() *
                                     result.getLocation().height();
 
-                            if (area > 100_000) {
+                            if (!lastNearObject.equals(result.getTitle())) {
+                                String msg = "";
 
-                                if (!lastNearObject.equals(result.getTitle())) {
-                                    tts.speak(result.getTitle() + " is to near",
-                                            TextToSpeech.QUEUE_ADD, null, null);
-                                }
+                                if (area > 100_000)
+                                    msg = " is near";
+                                else if (area > 40_000 && area < 100_000)
+                                    msg = " is tooo near";
 
+                                tts.speak(result.getTitle() + msg,
+                                        TextToSpeech.QUEUE_ADD,
+                                        null, null);
                                 lastNearObject = result.getTitle();
                             }
                         }
