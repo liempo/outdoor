@@ -15,6 +15,7 @@ import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.api.directions.v5.models.DirectionsRoute
 import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions
 import com.mapbox.services.android.navigation.ui.v5.listeners.NavigationListener
+import com.mapbox.services.android.navigation.v5.offroute.OffRouteListener
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -23,7 +24,7 @@ import safety.com.br.android_shake_detector.core.ShakeOptions
 import timber.log.Timber
 
 class NavigationActivity : AppCompatActivity(),
-    NavigationListener, ProgressChangeListener {
+    NavigationListener, ProgressChangeListener, OffRouteListener {
 
     private val args: NavigationActivityArgs by navArgs()
 
@@ -128,6 +129,17 @@ class NavigationActivity : AppCompatActivity(),
             )
             emergency = false
         }
+    }
+
+    override fun userOffRoute(location: Location?) {
+        SmsManager.getDefault().sendTextMessage(
+            FirebaseAuth.getInstance()
+                .currentUser?.phoneNumber, null,
+            "User is off the route" +
+                    "https://www.google.com/maps/search/" +
+                    "?api=1&query=${location?.latitude},${location?.longitude}>.",
+            null, null
+        )
     }
 
 }
