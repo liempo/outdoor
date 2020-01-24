@@ -1,5 +1,5 @@
 # TODO  
- - [ ] Shortcut for back
+ - [x] Shortcut for back
  - [ ] Testing modules
  - [ ] Feilds in Profile (photo and additional contact number)
  - [ ] Globalize shake to text
