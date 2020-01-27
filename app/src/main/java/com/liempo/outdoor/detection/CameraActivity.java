@@ -19,13 +19,17 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.auth.FirebaseAuth;
 import com.liempo.outdoor.R;
 import com.liempo.outdoor.tensorflow.env.ImageUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import android.telephony.SmsManager;
 import android.util.Size;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -38,6 +42,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 
+import safety.com.br.android_shake_detector.core.ShakeDetector;
+import safety.com.br.android_shake_detector.core.ShakeOptions;
 import timber.log.Timber;
 
 @SuppressWarnings({"deprecation", "ConstantConditions", "unused"})
@@ -74,6 +80,35 @@ public abstract class CameraActivity extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_camera);
+
+        FusedLocationProviderClient fused = LocationServices
+                .getFusedLocationProviderClient(this);
+
+        ShakeOptions options = new ShakeOptions()
+                .interval(1000)
+                .shakeCount(5)
+                .sensibility(2.0f);
+        new ShakeDetector(options)
+                .start(this, () -> fused.getLastLocation()
+                        .addOnSuccessListener(location -> {
+                        Toast.makeText(CameraActivity.this,
+                            "Sending notifcation to guardian",
+                            Toast.LENGTH_LONG).show();
+
+                    String msg = "User is off the route" +
+                            "https://www.google.com/maps/search/" +
+                            "?api=1&query="+ location.getLatitude() +
+                            + location.getLongitude();
+
+                    SmsManager.getDefault().sendTextMessage(
+                            FirebaseAuth.getInstance()
+                                    .getCurrentUser()
+                                    .getPhoneNumber(), null, msg,
+                            null, null
+                    );
+
+                }));
+
 
         if (hasPermission()) {
             setFragment();

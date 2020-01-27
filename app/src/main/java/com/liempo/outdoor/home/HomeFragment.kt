@@ -238,12 +238,16 @@ class HomeFragment : Fragment() {
             .sensibility(2.0f)
         ShakeDetector(shakeOptions).start(context) {
             fused.lastLocation.addOnSuccessListener {
+                Toast.makeText(context,
+                    "Sending notifcation to guardian",
+                    Toast.LENGTH_LONG).show()
                 SmsManager.getDefault().sendTextMessage(
                     FirebaseAuth.getInstance()
                         .currentUser?.phoneNumber, null,
                     "User is off the route" +
                             "https://www.google.com/maps/search/" +
-                            "?api=1&query=${it.latitude},${it.longitude}>.",
+                            "?api=1&query=${it.latitude}," +
+                            "${it.longitude}>.",
                     null, null
                 )
             }

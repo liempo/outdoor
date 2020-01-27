@@ -8,6 +8,7 @@ import android.telephony.SmsManager
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.navigation.navArgs
 import com.google.firebase.auth.FirebaseAuth
 import com.liempo.outdoor.R
@@ -132,6 +133,10 @@ class NavigationActivity : AppCompatActivity(),
     }
 
     override fun userOffRoute(location: Location?) {
+        Toast.makeText(this,
+            "Sending notifcation to guardian",
+            Toast.LENGTH_LONG).show()
+
         SmsManager.getDefault().sendTextMessage(
             FirebaseAuth.getInstance()
                 .currentUser?.phoneNumber, null,
