@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.VibrationEffect.*
 import android.os.Vibrator
+import android.telephony.SmsManager
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import androidx.fragment.app.Fragment
@@ -29,6 +30,8 @@ import com.liempo.outdoor.SpeechRecognitionModel
 import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.geojson.Point
 import kotlinx.android.synthetic.main.home_fragment.*
+import safety.com.br.android_shake_detector.core.ShakeDetector
+import safety.com.br.android_shake_detector.core.ShakeOptions
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
@@ -228,6 +231,23 @@ class HomeFragment : Fragment() {
             detector.onTouchEvent(event)
         }
 
+        // Initialize shake detector
+        val shakeOptions = ShakeOptions()
+            .interval(1000)
+            .shakeCount(5)
+            .sensibility(2.0f)
+        ShakeDetector(shakeOptions).start(context) {
+            fused.lastLocation.addOnSuccessListener {
+                SmsManager.getDefault().sendTextMessage(
+                    FirebaseAuth.getInstance()
+                        .currentUser?.phoneNumber, null,
+                    "User is off the route" +
+                            "https://www.google.com/maps/search/" +
+                            "?api=1&query=${it.latitude},${it.longitude}>.",
+                    null, null
+                )
+            }
+        }
     }
 
 }
