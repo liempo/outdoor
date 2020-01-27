@@ -31,7 +31,7 @@
             app:destination="@id/navigationActivity" />
         <action
             android:id="@+id/openSettings"
-            app:destination="@id/settingsFragment" />
+            app:destination="@id/profileFragment" />
 
     </fragment>
 
@@ -47,9 +47,9 @@
 
     </activity>
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.liempo.outdoor.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:id="@+id/profileFragment"
+        android:name="com.liempo.outdoor.splash.ProfileFragment"
+        android:label="profileFragment" />
     <action
         android:id="@+id/logout"
         app:destination="@id/splashFragment"

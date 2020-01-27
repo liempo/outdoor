@@ -1,4 +1,4 @@
-package com.liempo.outdoor
+package com.liempo.outdoor.splash
 
 import android.app.Activity
 import android.content.Intent
@@ -9,13 +9,16 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import com.liempo.outdoor.BuildConfig
+import com.liempo.outdoor.R
+import com.liempo.outdoor.SettingsFragmentDirections
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
 import timber.log.Timber
 
-class SettingsFragment : PreferenceFragmentCompat() {
+class ProfileFragment : PreferenceFragmentCompat() {
 
     // Will be used to check if user is logged in
     private lateinit var auth: FirebaseAuth
@@ -45,8 +48,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .placeOptions(options)
             .build(activity)
 
+        findPreference<Preference>("pref_guardian_number")?.apply {
+            summary = FirebaseAuth.getInstance().currentUser?.phoneNumber
+            setOnPreferenceClickListener {
+                FirebaseAuth.getInstance().signOut()
+                findNavController().navigate(
+                    SettingsFragmentDirections.logout()
+                )
+                true
+            }
+        }
+
         findPreference<Preference>("pref_home")?.setOnPreferenceClickListener {
-            startActivityForResult(picker, RC_PLACE_PICKER)
+            startActivityForResult(picker,
+                RC_PLACE_PICKER
+            )
 
             true
         }
@@ -54,7 +70,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("pref_logout")?.setOnPreferenceClickListener {
             FirebaseAuth.getInstance().signOut()
             findNavController().navigate(
-                SettingsFragmentDirections.logout())
+                SettingsFragmentDirections.logout()
+            )
 
             true
         }
