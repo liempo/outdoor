@@ -72,6 +72,9 @@ dependencies {
     // Firebase stuff
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.3.1'
+    implementation 'com.google.firebase:firebase-storage:19.1.0'
+
+    // Tensorflow lite
     implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 
     // Mapbox places sdk
@@ -82,7 +85,7 @@ dependencies {
     implementation "com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.4"
 
     // Network calls and json parsing
-    implementation 'com.squareup.okhttp3:okhttp:4.2.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
     implementation 'com.beust:klaxon:5.0.1'
 
     // Misc tools
