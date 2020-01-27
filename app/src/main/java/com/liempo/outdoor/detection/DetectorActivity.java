@@ -91,7 +91,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     public void onPreviewSizeChosen(final Size size, final int rotation) {
         final float textSizePx =
                 TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
+                        TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP,
+                        getResources().getDisplayMetrics());
         BorderedText borderedText = new BorderedText(textSizePx);
         borderedText.setTypeface(Typeface.MONOSPACE);
 
