@@ -51,7 +51,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<Preference>("key_logout")?.setOnPreferenceClickListener {
+        findPreference<Preference>("pref_logout")?.setOnPreferenceClickListener {
             FirebaseAuth.getInstance().signOut()
             findNavController().navigate(
                 SettingsFragmentDirections.logout())
