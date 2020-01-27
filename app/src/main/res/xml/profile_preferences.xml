@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:title="Profile Picture">
+
+        <Preference
+            android:layout="@layout/layout_profile"/>
+
+    </PreferenceCategory>
 
     <PreferenceCategory
         app:title="User Profile">
@@ -24,6 +33,11 @@
             app:key="pref_guardian_name"
             app:title="Guardian Name"
             app:defaultValue="Guardian"
+            app:useSimpleSummaryProvider="true"/>
+
+        <Preference
+            app:key="pref_guardian_number"
+            app:title="Guardian Name"
             app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>

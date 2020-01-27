@@ -27,7 +27,7 @@ class ProfileFragment : PreferenceFragmentCompat() {
     private lateinit var db: FirebaseFirestore
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.settings_preferences, rootKey)
+        setPreferencesFromResource(R.xml.profile_preferences, rootKey)
 
         // Initialize firebase auth
         auth = FirebaseAuth.getInstance()
