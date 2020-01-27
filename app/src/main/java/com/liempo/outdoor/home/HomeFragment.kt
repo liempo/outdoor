@@ -186,7 +186,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        settings_cardview.setOnClickListener {
+        profile_cardview.setOnClickListener {
             findNavController().navigate(
                 HomeFragmentDirections.openSettings())
         }

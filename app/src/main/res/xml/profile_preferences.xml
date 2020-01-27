@@ -37,7 +37,7 @@
 
         <Preference
             app:key="pref_guardian_number"
-            app:title="Guardian Name"
+            app:title="Guardian Number"
             app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>

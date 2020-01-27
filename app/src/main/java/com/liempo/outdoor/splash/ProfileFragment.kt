@@ -11,7 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.liempo.outdoor.BuildConfig
 import com.liempo.outdoor.R
-import com.liempo.outdoor.SettingsFragmentDirections
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
@@ -53,7 +52,7 @@ class ProfileFragment : PreferenceFragmentCompat() {
             setOnPreferenceClickListener {
                 FirebaseAuth.getInstance().signOut()
                 findNavController().navigate(
-                    SettingsFragmentDirections.logout()
+                    ProfileFragmentDirections.logout()
                 )
                 true
             }
@@ -70,7 +69,7 @@ class ProfileFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("pref_logout")?.setOnPreferenceClickListener {
             FirebaseAuth.getInstance().signOut()
             findNavController().navigate(
-                SettingsFragmentDirections.logout()
+                ProfileFragmentDirections.logout()
             )
 
             true
