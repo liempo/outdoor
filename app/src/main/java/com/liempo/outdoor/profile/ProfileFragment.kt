@@ -3,9 +3,10 @@ package com.liempo.outdoor.profile
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -19,7 +20,7 @@ import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
 import timber.log.Timber
 
-class ProfileFragment : PreferenceFragmentCompat() {
+class ProfileFragment : Fragment() {
 
     // Will be used to check if user is logged in
     private lateinit var auth: FirebaseAuth
@@ -30,7 +31,8 @@ class ProfileFragment : PreferenceFragmentCompat() {
     // Storage object for firestore
     private lateinit var storage: StorageReference
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         // Initialize firebase auth
         auth = FirebaseAuth.getInstance()
@@ -40,53 +42,14 @@ class ProfileFragment : PreferenceFragmentCompat() {
 
         // Initialize firebase cloud storage
         storage = FirebaseStorage.getInstance().reference
-
-//        profilePicture.setOnPreferenceClickListener {
-//            startActivityForResult(Intent(ACTION_PICK)
-//                .apply { type = "image/*" }, RC_IMAGE_PICKER)
-//            true
-//        }
-
-        storage.child("profile_pic/${auth.uid}")
-            .stream.addOnSuccessListener {
-            it.storage.downloadUrl.addOnSuccessListener { uri ->
-                ProfileImagePreference(requireContext(), uri)
-
-
-            }
-        }
     }
 
-    private fun initializePreferences(rootKey: String) {
-        setPreferencesFromResource(R.xml.profile_preferences, rootKey)
-
-        findPreference<Preference>("pref_guardian_number")?.apply {
-            summary = FirebaseAuth.getInstance().currentUser?.phoneNumber
-            setOnPreferenceClickListener {
-                auth.signOut()
-                findNavController().navigate(
-                    ProfileFragmentDirections.logout()
-                )
-
-                true
-            }
-        }
-
-        findPreference<Preference>("pref_home")?.setOnPreferenceClickListener {
-            startActivityForResult(getPlacePickerIntent(), RC_PLACE_PICKER)
-
-            true
-        }
-
-        findPreference<Preference>("pref_logout")?.setOnPreferenceClickListener {
-            auth.signOut()
-            findNavController().navigate(
-                ProfileFragmentDirections.logout()
-            )
-
-            true
-        }
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(
+        R.layout.fragment_profile,
+        container, false)
 
     private fun getPlacePickerIntent(): Intent {
         // Initialize place picker intent
