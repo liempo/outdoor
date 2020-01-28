@@ -6,4 +6,7 @@
     <string name="title_settings">Settings</string>
     <string name="title_profile">Profile</string>
     <string name="msg_detected_text">Recognized text are displayed here</string>
+    <string name="title_user_name">User Name</string>
+    <string name="title_home_button">Setup Home Locaiton</string>
+    <string name="title_guardian_name">Guardian Name</string>
 </resources>
