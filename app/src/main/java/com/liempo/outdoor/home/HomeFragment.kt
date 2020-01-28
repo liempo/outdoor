@@ -3,7 +3,6 @@ package com.liempo.outdoor.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.VibrationEffect.*
 import android.os.Vibrator
@@ -13,6 +12,7 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -29,15 +29,15 @@ import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
 import com.liempo.outdoor.detection.DetectorActivity
 import com.mapbox.geojson.Point
-import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import safety.com.br.android_shake_detector.core.ShakeDetector
 import safety.com.br.android_shake_detector.core.ShakeOptions
 import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
-    private lateinit var model: HomeViewModel
-    private lateinit var speech: SpeechRecognitionModel
+    private val model: HomeViewModel by viewModels()
+    private val speech: SpeechRecognitionModel by viewModels()
 
     private lateinit var fused: FusedLocationProviderClient
     private lateinit var places: PlacesClient
@@ -60,16 +60,12 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.home_fragment,
+    ): View? = inflater.inflate(R.layout.fragment_home,
         container, false)
 
     @SuppressLint("DefaultLocale")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        model = ViewModelProviders.of(this)
-            .get(HomeViewModel::class.java)
-        speech = ViewModelProviders.of(this)
-            .get(SpeechRecognitionModel::class.java)
 
         // Setup speech model
         speech.recognizedText.observe(this, Observer {
