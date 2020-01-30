@@ -109,9 +109,9 @@ class SplashFragment : Fragment() {
                     place.center()!!.latitude(),
                     place.center()!!.longitude())
 
-                db.collection("home")
+                db.collection("profile")
                     .document(auth.currentUser!!.uid)
-                    .set(hashMapOf("location" to location))
+                    .set(hashMapOf("home" to location))
                     .addOnSuccessListener {
                         Timber.i("Successfully updated database.")
                     }
