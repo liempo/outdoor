@@ -1,7 +1,7 @@
 # TODO  
  - [x] Shortcut for back
- - [ ] Testing modules
- - [ ] Feilds in Profile (photo and additional contact number)
+ - [x] Update Profile
  - [x] Globalize shake to text
  - [x] Off route
  - [x] Too near and near
+ - [ ] Testing modules
