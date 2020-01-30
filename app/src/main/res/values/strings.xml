@@ -9,4 +9,6 @@
     <string name="title_user_name">User Name</string>
     <string name="title_home_button">Setup Home Locaiton</string>
     <string name="title_guardian_name">Guardian Name</string>
+    <string name="action_edit_profile">Edit Profile</string>
+    <string name="action_save_profile">Save Profile</string>
 </resources>

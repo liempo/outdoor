@@ -17,14 +17,28 @@
 
         <ImageView
             android:id="@+id/profile_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_person_gray_24dp"
             tools:src="@tools:sample/avatars[0]"
             tools:ignore="ContentDescription" />
 
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image_card"
+        app:layout_constraintStart_toStartOf="@+id/profile_image_card"
+        app:layout_constraintTop_toBottomOf="@id/profile_image_card"
+        android:text="@string/action_edit_profile"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/user_card"
@@ -33,7 +47,7 @@
         android:layout_margin="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_image_card">
+        app:layout_constraintTop_toBottomOf="@id/edit_button">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,18 +56,22 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_user_name">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_name_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     tools:text="Alec John"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                android:id="@+id/setup_home_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/title_home_button"
@@ -79,18 +97,22 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/guardian_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_guardian_name">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/guardian_name_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     tools:text="Jesus Christ"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                android:id="@+id/change_number_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="+63 956 068 7614"

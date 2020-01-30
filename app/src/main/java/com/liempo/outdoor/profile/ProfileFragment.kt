@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -18,6 +21,7 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.plugins.places.picker.PlacePicker
 import com.mapbox.mapboxsdk.plugins.places.picker.model.PlacePickerOptions
+import kotlinx.android.synthetic.main.fragment_profile.*
 import timber.log.Timber
 
 class ProfileFragment : Fragment() {
@@ -30,6 +34,8 @@ class ProfileFragment : Fragment() {
 
     // Storage object for firestore
     private lateinit var storage: StorageReference
+
+    private var editable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +57,70 @@ class ProfileFragment : Fragment() {
         R.layout.fragment_profile,
         container, false)
 
-    private fun getPlacePickerIntent(): Intent {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        storage.child("profile_pic")
+            .child(auth.uid!!)
+            .downloadUrl.addOnSuccessListener {
+            Glide.with(profile_image)
+                .load(it)
+                .into(profile_image)
+        }
+
+        store.collection("profile")
+            .document(auth.currentUser!!.uid)
+            .get().addOnSuccessListener {
+                user_name_input.setText(it["user_name"].toString())
+                guardian_name_input.setText(it["guardian_name"].toString())
+            }
+
+        change_number_button.text = auth.currentUser!!.phoneNumber
+
+        profile_image.setOnClickListener {
+            startImagePicker()
+        }
+
+        edit_button.setOnClickListener {
+            editable = editable.not()
+            Timber.d("isEditable = $editable")
+            isEditEnabled(editable)
+        }
+
+        setup_home_button.setOnClickListener {
+            startPlacePicker()
+        }
+
+        change_number_button.setOnClickListener {
+            startFirebaseAuth()
+        }
+    }
+
+    private fun isEditEnabled(value: Boolean) {
+        // Update firebase elements
+        val userName = user_name_input.text.toString()
+        val guardianName = guardian_name_input.text.toString()
+
+        store.collection("profile")
+            .document(auth.currentUser!!.uid)
+            .set(hashMapOf("user_name" to userName,
+                "guardian_name" to guardianName))
+            .addOnSuccessListener {
+                Toast.makeText(context, "Updated profile",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+        user_name_input.isEnabled = value
+        guardian_name_input.isEnabled = value
+        change_number_button.isEnabled = value
+
+        edit_button.text = if (value)
+            getString(R.string.action_edit_profile)
+        else getString(R.string.action_save_profile)
+
+    }
+
+    private fun startPlacePicker() {
         // Initialize place picker intent
         val options = PlacePickerOptions.builder()
             // Look at this fucking shit, who has typos in their code?
@@ -60,10 +129,35 @@ class ProfileFragment : Fragment() {
                     .target(LatLng(14.191168,121.157478))
                     .zoom(10.0).build())
             .build()
-        return PlacePicker.IntentBuilder()
+        val intent = PlacePicker.IntentBuilder()
             .accessToken(BuildConfig.MapboxApiKey)
             .placeOptions(options)
             .build(activity)
+        startActivityForResult(intent, RC_IMAGE_PICKER)
+    }
+
+    private fun startImagePicker() {
+        val intent = Intent().apply {
+            action = Intent.ACTION_GET_CONTENT
+            type = "image/*"
+        }
+
+        startActivityForResult(intent, RC_IMAGE_PICKER)
+    }
+
+    private fun startFirebaseAuth() {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.PhoneBuilder().build()
+        )
+
+        // Start Firebase UI authentication
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build(),
+            RC_SIGN_IN
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,12 +182,19 @@ class ProfileFragment : Fragment() {
                 }
 
                 RC_IMAGE_PICKER -> {
-                    data.data!!
+                    storage.child("profile_pic/${auth.uid}")
+                        .putFile(data.data!!)
+                        .addOnSuccessListener {
+                            Glide.with(profile_image)
+                                .load(data.data!!)
+                                .into(profile_image)
+                        }
                 }
             }
     }
 
     companion object {
+        private const val RC_SIGN_IN = 12311
         private const val RC_PLACE_PICKER = 15145
         private const val RC_IMAGE_PICKER = 17453
     }
