@@ -14,9 +14,7 @@
         <action
             android:id="@+id/startHome"
             app:destination="@id/homeFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/navigation_main"
-            app:popUpToInclusive="true" />
+            app:launchSingleTop="true" />
 
     </fragment>
 
@@ -61,10 +59,17 @@
         app:launchSingleTop="true"
         app:popUpTo="@id/navigation_main"
         app:popUpToInclusive="false" />
+
     <fragment
         android:id="@+id/test_fragment"
         android:name="com.liempo.outdoor.test.TestFragment"
         android:label="testFragment"
-        tools:layout="@layout/fragment_test" />
+        tools:layout="@layout/fragment_test" >
+
+        <action
+            android:id="@+id/startTestNavigation"
+            app:destination="@id/navigationActivity" />
+
+    </fragment>
 
 </navigation>

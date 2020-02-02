@@ -94,10 +94,10 @@ class HomeFragment : Fragment() {
             // Get keyword else exit
             val text = speech.recognizedText.value
             if (text?.toLowerCase() == "go home") {
-                FirebaseFirestore.getInstance().collection("home")
+                FirebaseFirestore.getInstance().collection("profile")
                     .document(FirebaseAuth.getInstance().uid!!).get()
                     .addOnSuccessListener { snapshot ->
-                        val home = snapshot["location"] as GeoPoint
+                        val home = snapshot["home"] as GeoPoint
 
                         fused.lastLocation.addOnSuccessListener { loc ->
                             model.getBestRoute(
