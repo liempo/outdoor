@@ -52,8 +52,7 @@ class SpeechRecognitionModel(application: Application):
         this.rmsValue.value = rms
     }
 
-    override fun onPartialResults(results: Bundle?) =
-        updateResults(speechBundle = results)
+    override fun onPartialResults(results: Bundle?) {}
 
     override fun onResults(results: Bundle?) =
         updateResults(speechBundle = results)

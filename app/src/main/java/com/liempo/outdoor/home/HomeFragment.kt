@@ -6,12 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect.*
 import android.os.Vibrator
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.QUEUE_ADD
 import android.telephony.SmsManager
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
-import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getColor
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -26,7 +28,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
-
 import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
 import com.liempo.outdoor.detection.DetectorActivity
@@ -35,6 +36,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import safety.com.br.android_shake_detector.core.ShakeDetector
 import safety.com.br.android_shake_detector.core.ShakeOptions
 import timber.log.Timber
+import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -47,6 +49,9 @@ class HomeFragment : Fragment() {
     // Will be used to please horny women
     private lateinit var vibrator: Vibrator
 
+    // TTS for place found
+    private lateinit var tts: TextToSpeech
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,6 +62,13 @@ class HomeFragment : Fragment() {
         // Initialize vibrator 2000
         vibrator = context?.getSystemService(
             Context.VIBRATOR_SERVICE) as Vibrator
+
+        // Initialize text to speech
+        tts = TextToSpeech(context) {
+            if (it != TextToSpeech.ERROR) {
+                tts.language = Locale.US
+            }
+        }
     }
 
     override fun onCreateView(
@@ -134,7 +146,9 @@ class HomeFragment : Fragment() {
                     Place.Field.LAT_LNG)
                 ).build()
             places.fetchPlace(request).addOnSuccessListener { place ->
-                detected_text.text = place.place.name!!
+                val placeName = place.place.name!!
+                detected_text.text = placeName
+                tts.speak(placeName, QUEUE_ADD, null, null)
 
                 val dest = Point.fromLngLat(
                     place.place.latLng!!.longitude,
