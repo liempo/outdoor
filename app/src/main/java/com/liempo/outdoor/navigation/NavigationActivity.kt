@@ -5,8 +5,6 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.telephony.SmsManager
-import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.navigation.navArgs
@@ -20,16 +18,20 @@ import com.mapbox.services.android.navigation.v5.offroute.OffRouteListener
 import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeListener
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress
 import kotlinx.android.synthetic.main.activity_navigation.*
+import com.github.pwittchen.gesture.library.Gesture
+import com.github.pwittchen.gesture.library.GestureListener
 import safety.com.br.android_shake_detector.core.ShakeDetector
 import safety.com.br.android_shake_detector.core.ShakeOptions
 import timber.log.Timber
 
 class NavigationActivity : AppCompatActivity(),
-    NavigationListener, ProgressChangeListener, OffRouteListener {
+    NavigationListener, ProgressChangeListener, OffRouteListener, GestureListener {
 
     private val args: NavigationActivityArgs by navArgs()
 
     private var emergency = false
+
+    private lateinit var gesture: Gesture
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,20 +61,10 @@ class NavigationActivity : AppCompatActivity(),
             nav_view.startNavigation(builder.build())
         }
 
-        val detector = GestureDetector(
-            this, object : SimpleOnGestureListener() {
-
-            override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
-                startActivity(Intent(this@NavigationActivity,
-                    DetectorActivity::class.java))
-                return super.onDoubleTapEvent(e)
-            }
-        })
-
-        nav_view.setOnTouchListener { _, event ->
-            detector.onTouchEvent(event)
+        // Setup gesture
+        gesture = Gesture().apply {
+            addListener(this@NavigationActivity)
         }
-
     }
 
     override fun onNavigationFinished() {
@@ -85,6 +77,28 @@ class NavigationActivity : AppCompatActivity(),
     override fun onCancelNavigation() {
         nav_view.stopNavigation()
         onBackPressed()
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        gesture.dispatchTouchEvent(event)
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun onDrag(motionEvent: MotionEvent?) {}
+
+    override fun onTap(motionEvent: MotionEvent?) {}
+
+    override fun onPress(motionEvent: MotionEvent?) {}
+
+    override fun onRelease(motionEvent: MotionEvent?) {}
+
+    override fun onMove(motionEvent: MotionEvent?) {}
+
+    override fun onLongPress(motionEvent: MotionEvent?) {}
+
+    override fun onMultiTap(motionEvent: MotionEvent?, clicks: Int) {
+        startActivity(Intent(this,
+            DetectorActivity::class.java))
     }
 
     override fun onStart() {

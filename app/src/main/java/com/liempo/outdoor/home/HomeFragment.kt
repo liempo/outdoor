@@ -15,12 +15,14 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -147,6 +149,13 @@ class HomeFragment : Fragment() {
                 }
             }.addOnFailureListener { e ->
                 Timber.e(e, "Error Fetching $it")
+                if (e is ApiException) {
+                    Snackbar.make(rms_cardview,
+                        "Exceed the Places API Quota.",
+                        Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+
                 rms_view.stop(); rms_view.play()
             }
         })
