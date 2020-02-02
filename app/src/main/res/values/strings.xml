@@ -11,4 +11,8 @@
     <string name="title_guardian_name">Guardian Name</string>
     <string name="action_edit_profile">Edit Profile</string>
     <string name="action_save_profile">Save Profile</string>
+
+    <string name="title_object_detection">Object Detection</string>
+    <string name="title_navigation">Navigation</string>
+    <string name="title_speech_recognition">Speech Recognition</string>
 </resources>

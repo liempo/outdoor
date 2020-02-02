@@ -32,6 +32,9 @@
         <action
             android:id="@+id/openSettings"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/openTest"
+            app:destination="@id/test_fragment" />
 
     </fragment>
 
@@ -58,5 +61,10 @@
         app:launchSingleTop="true"
         app:popUpTo="@id/navigation_main"
         app:popUpToInclusive="false" />
+    <fragment
+        android:id="@+id/test_fragment"
+        android:name="com.liempo.outdoor.test.TestFragment"
+        android:label="testFragment"
+        tools:layout="@layout/fragment_test" />
 
 </navigation>

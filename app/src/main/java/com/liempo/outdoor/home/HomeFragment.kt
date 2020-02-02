@@ -196,6 +196,11 @@ class HomeFragment : Fragment() {
                 HomeFragmentDirections.openSettings())
         }
 
+        settings_cardview.setOnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.openTest())
+        }
+
         val detector = GestureDetector(
             requireContext(), object : SimpleOnGestureListener() {
 
