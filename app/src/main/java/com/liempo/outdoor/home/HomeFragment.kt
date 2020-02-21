@@ -279,7 +279,7 @@ class HomeFragment : Fragment() {
             .interval(1000)
             .shakeCount(5)
             .sensibility(2.0f)
-        ShakeDetector(shakeOptions).start(context) {
+        shake = ShakeDetector(shakeOptions).start(context) {
             fused.lastLocation.addOnSuccessListener {
                 Toast.makeText(context,
                     "Sending notifcation to guardian",
