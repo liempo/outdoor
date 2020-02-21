@@ -53,6 +53,9 @@ class HomeFragment : Fragment() {
     // TTS for place found
     private lateinit var tts: TextToSpeech
 
+    // Shake it off, shake it off who who who
+    private lateinit var shake: ShakeDetector
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -297,8 +300,9 @@ class HomeFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
 
-        // Prevent memory leak
+        // Prevent memory leaks
         tts.stop(); tts.shutdown()
+        shake.destroy(context)
     }
 
 }

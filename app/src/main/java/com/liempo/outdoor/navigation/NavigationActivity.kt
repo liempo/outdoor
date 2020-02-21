@@ -28,6 +28,7 @@ class NavigationActivity : AppCompatActivity(),
     NavigationListener, ProgressChangeListener, OffRouteListener, GestureListener {
 
     private val args: NavigationActivityArgs by navArgs()
+    private lateinit var shake: ShakeDetector
 
     private var emergency = false
 
@@ -42,7 +43,7 @@ class NavigationActivity : AppCompatActivity(),
             .interval(1000)
             .shakeCount(5)
             .sensibility(2.0f)
-        ShakeDetector(shakeOptions).start(this) {
+        shake = ShakeDetector(shakeOptions).start(this) {
             emergency = true
         }
 
@@ -86,7 +87,10 @@ class NavigationActivity : AppCompatActivity(),
 
     override fun onDrag(motionEvent: MotionEvent?) {}
 
-    override fun onTap(motionEvent: MotionEvent?) {}
+    override fun onTap(motionEvent: MotionEvent?) {
+        startActivity(Intent(this,
+            DetectorActivity::class.java))
+    }
 
     override fun onPress(motionEvent: MotionEvent?) {}
 
@@ -96,10 +100,7 @@ class NavigationActivity : AppCompatActivity(),
 
     override fun onLongPress(motionEvent: MotionEvent?) {}
 
-    override fun onMultiTap(motionEvent: MotionEvent?, clicks: Int) {
-        startActivity(Intent(this,
-            DetectorActivity::class.java))
-    }
+    override fun onMultiTap(motionEvent: MotionEvent?, clicks: Int) {}
 
     override fun onStart() {
         super.onStart()
@@ -159,6 +160,11 @@ class NavigationActivity : AppCompatActivity(),
                     "?api=1&query=${location?.latitude},${location?.longitude}>.",
             null, null
         )
+    }
+
+    override fun onDestroy() {
+        shake.destroy(this)
+        super.onDestroy()
     }
 
 }
