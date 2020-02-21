@@ -215,9 +215,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 String msg = "";
 
                                 if (area > 100_000)
-                                    msg = " is near";
+                                    msg = " is too near";
                                 else if (area > 40_000 && area < 100_000)
-                                    msg = " is tooo near";
+                                    msg = " is near";
+
 
                                 tts.speak(result.getTitle() + msg,
                                         TextToSpeech.QUEUE_ADD,
