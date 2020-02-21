@@ -96,9 +96,7 @@ class ProfileFragment : Fragment() {
             startFirebaseAuth()
         }
 
-        logout_card.setOnClickListener {
-            Timber.d("CurrentUser: ${auth.currentUser}")
-
+        logout_button.setOnClickListener {
             auth.signOut()
             findNavController().navigate(
                 ProfileFragmentDirections.logout())

@@ -115,8 +115,6 @@ class SplashFragment : Fragment() {
                     .addOnSuccessListener {
                         Timber.i("Successfully updated database.")
                     }
-
-                findNavController().navigate(SplashFragmentDirections.startHome())
             }
         }
     }
