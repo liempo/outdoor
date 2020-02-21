@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Through Sight</string>
+    <string name="app_name">TS</string>
 
     <string name="error_missing_permissions">Some permissions are not granted. Exiting app.</string>
     <string name="action_logout">Logout</string>
-    <string name="title_settings">Settings</string>
+    <string name="title_settings">Testing</string>
     <string name="title_profile">Profile</string>
-    <string name="msg_detected_text">Recognized text are displayed here</string>
+    <string name="msg_detected_text">Tap the screen to start recording</string>
     <string name="title_user_name">User Name</string>
     <string name="title_home_button">Setup Home Locaiton</string>
     <string name="title_guardian_name">Guardian Name</string>
