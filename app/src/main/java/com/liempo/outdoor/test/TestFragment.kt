@@ -1,6 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.liempo.outdoor.test
 
-
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -25,6 +27,7 @@ class TestFragment : Fragment() {
 
     private val speech: SpeechRecognitionModel by viewModels()
     private val model: TestViewModel by viewModels()
+    private lateinit var progress: ProgressDialog
     private lateinit var fused: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +57,7 @@ class TestFragment : Fragment() {
         model.routeJson.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
 
+            progress.show()
             findNavController().navigate(
                 TestFragmentDirections.startTestNavigation(it))
         })
@@ -66,8 +70,13 @@ class TestFragment : Fragment() {
             startActivity(Intent(requireActivity(),
                 DetectorActivity::class.java))
         }
+        progress = ProgressDialog(context).apply {
+            setMessage("Loading navigation")
+        }
 
         navigation_card.setOnClickListener {
+
+            progress.show()
 
             fused.lastLocation.addOnSuccessListener { loc ->
                 model.getBestRoute(
@@ -102,6 +111,11 @@ class TestFragment : Fragment() {
                 speech.startListening()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (progress.isShowing) progress.dismiss()
     }
 
 }
