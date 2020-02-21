@@ -13,9 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
 
 import com.liempo.outdoor.R
 import com.liempo.outdoor.SpeechRecognitionModel
@@ -45,16 +42,16 @@ class TestFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         // Setup speech model
-        speech.recognizedText.observe(this, Observer {
+        speech.recognizedText.observe(viewLifecycleOwner, Observer {
             detected_text.text = it
         })
 
-        speech.error.observe(this, Observer {
+        speech.error.observe(viewLifecycleOwner, Observer {
             Toast.makeText(context, "Error: $it",
                 Toast.LENGTH_SHORT).show()
         })
 
-        model.routeJson.observe(this, Observer {
+        model.routeJson.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
 
             findNavController().navigate(
@@ -71,18 +68,31 @@ class TestFragment : Fragment() {
         }
 
         navigation_card.setOnClickListener {
-            FirebaseFirestore.getInstance().collection("profile")
-                .document(FirebaseAuth.getInstance().uid!!).get()
-                .addOnSuccessListener { snapshot ->
-                    val home = snapshot["home"] as GeoPoint
 
-                    fused.lastLocation.addOnSuccessListener { loc ->
-                        model.getBestRoute(
-                            Point.fromLngLat(loc.longitude, loc.latitude),
-                            Point.fromLngLat(home.longitude, home.latitude)
-                        )
-                    }
-                }
+            fused.lastLocation.addOnSuccessListener { loc ->
+                model.getBestRoute(
+                        Point.fromLngLat(loc.longitude, loc.latitude),
+                        Point.fromLngLat(121.157478,14.191168)
+                )
+            }
+
+//            FirebaseFirestore.getInstance().collection("profile")
+//                .document(FirebaseAuth.getInstance().uid!!).get()
+//                .addOnSuccessListener { snapshot ->
+//                    val home = snapshot["home"] as GeoPoint
+//
+//                    fused.lastLocation.addOnSuccessListener { loc ->
+//                        model.getBestRoute(
+//                            Point.fromLngLat(loc.longitude, loc.latitude),
+//                            Point.fromLngLat(121.157478,14.191168)
+//                        )
+//                    }
+//                }
+//                .addOnFailureListener {
+//                    Toast.makeText(context,
+//                            "Error getting home location",
+//                            Toast.LENGTH_SHORT).show()
+//                }
         }
 
         speech_recognition_card.setOnClickListener {
