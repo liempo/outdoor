@@ -12,6 +12,7 @@ import android.telephony.SmsManager
 import android.view.*
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -81,21 +82,31 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // Set up back button not working
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, callback)
+
         // Setup speech model
-        speech.recognizedText.observe(this, Observer {
+        speech.recognizedText.observe(viewLifecycleOwner, Observer {
             detected_text.text = it
         })
 
-        speech.error.observe(this, Observer {
+        speech.error.observe(viewLifecycleOwner, Observer {
             Toast.makeText(context, "Error: $it",
                 Toast.LENGTH_SHORT).show()
         })
 
-        speech.rmsValue.observe(this, Observer {
+        speech.rmsValue.observe(viewLifecycleOwner, Observer {
             rms_view.setRms(it)
         })
 
-        speech.isListening.observe(this, Observer {
+        speech.isListening.observe(viewLifecycleOwner, Observer {
             // Ignore if still listening
             if (it) return@Observer
             Timber.i("triggered")
@@ -136,7 +147,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        model.place.observe(this, Observer {
+        model.place.observe(viewLifecycleOwner, Observer {
             if (it == null) return@Observer
 
             // Get place LatLng
@@ -174,7 +185,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        model.routeJson.observe(this, Observer {
+        model.routeJson.observe(viewLifecycleOwner, Observer {
             Timber.i("Route: $it")
 
             if (it == null) return@Observer
@@ -222,8 +233,11 @@ class HomeFragment : Fragment() {
                     vibrator.vibrate(createWaveform(
                         longArrayOf(50, 50), -1))
 
-                    startActivity(Intent(requireActivity(),
-                            DetectorActivity::class.java))
+                    // Change command from here
+                    speech.recognizedText.value = "Go home"
+
+                    // Trigger route generation
+                    speech.isListening.value = false
                     return super.onDoubleTap(e)
                 }
 
@@ -235,18 +249,20 @@ class HomeFragment : Fragment() {
                 override fun onSingleTapUp(e: MotionEvent?): Boolean {
                     vibrator.vibrate(createOneShot(
                         100, DEFAULT_AMPLITUDE))
+                    if (speech.isListening.value == true) {
+                        speech.stopListening()
+                    } else {
+                        speech.startListening()
+                        rms_view.startRmsInterpolation()
+                    }
                     return true
                 }
 
                 override fun onLongPress(e: MotionEvent?) {
                     vibrator.vibrate(createOneShot(
                         300, DEFAULT_AMPLITUDE))
-
-                    // Change command from here
-                    speech.recognizedText.value = "Go home"
-
-                    // Trigger route generation
-                    speech.isListening.value = false
+                    startActivity(Intent(requireActivity(),
+                        DetectorActivity::class.java))
                 }
 
             })
@@ -276,6 +292,13 @@ class HomeFragment : Fragment() {
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Prevent memory leak
+        tts.stop(); tts.shutdown()
     }
 
 }
