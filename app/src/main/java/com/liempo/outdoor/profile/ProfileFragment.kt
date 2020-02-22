@@ -38,6 +38,8 @@ class ProfileFragment : Fragment() {
 
     private var editable = false
 
+    private lateinit var home: GeoPoint
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,6 +76,7 @@ class ProfileFragment : Fragment() {
             .get().addOnSuccessListener {
                 user_name_input.setText(it["user_name"].toString())
                 guardian_name_input.setText(it["guardian_name"].toString())
+                home = it["home"] as GeoPoint
             }
 
         change_number_button.text = auth.currentUser!!.phoneNumber
@@ -133,7 +136,7 @@ class ProfileFragment : Fragment() {
             // Look at this fucking shit, who has typos in their code?
             .statingCameraPosition(
                 CameraPosition.Builder()
-                    .target(LatLng(14.191168,121.157478))
+                    .target(LatLng(home.latitude,home.longitude))
                     .zoom(10.0).build())
             .build()
         val intent = PlacePicker.IntentBuilder()

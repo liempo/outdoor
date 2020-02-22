@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -34,7 +36,10 @@ class SplashFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
 
     // Place picker intent
-    private lateinit var picker: Intent
+    private lateinit var picker: PlacePicker.IntentBuilder
+
+    // Location provider
+    private lateinit var fused: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,18 +50,12 @@ class SplashFragment : Fragment() {
         // Initialize firebase firestore
         db = FirebaseFirestore.getInstance()
 
+        // Initialize fused location
+        fused = LocationServices.getFusedLocationProviderClient(requireContext())
+
         // Initialize place picker intent
-        val options = PlacePickerOptions.builder()
-            // Look at this fucking shit, who has typos in their code?
-            .statingCameraPosition(
-                CameraPosition.Builder()
-                    .target(LatLng(14.191168,121.157478))
-                    .zoom(10.0).build())
-            .build()
         picker = PlacePicker.IntentBuilder()
             .accessToken(BuildConfig.MapboxApiKey)
-            .placeOptions(options)
-            .build(activity)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -100,7 +99,21 @@ class SplashFragment : Fragment() {
         if (resultCode == RESULT_OK) when (requestCode) {
             RC_SIGN_IN -> {
                 Timber.d("User logged in: ${auth.currentUser?.phoneNumber}")
-                startActivityForResult(picker, RC_PLACE_PICKER)
+
+                fused.lastLocation.addOnSuccessListener { loc ->
+                    val options = PlacePickerOptions.builder()
+                    // Look at this fucking shit, who has typos in their code?
+                    .statingCameraPosition(
+                        CameraPosition.Builder()
+                            .target(LatLng(loc.latitude, loc.longitude))
+                            .zoom(10.0).build())
+                    .build()
+
+                    startActivityForResult(
+                        picker.placeOptions(options)
+                            .build(activity),
+                        RC_PLACE_PICKER)
+                }
             }
 
             RC_PLACE_PICKER -> {
