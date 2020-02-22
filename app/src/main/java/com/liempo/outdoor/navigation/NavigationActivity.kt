@@ -155,7 +155,7 @@ class NavigationActivity : AppCompatActivity(),
         SmsManager.getDefault().sendTextMessage(
             FirebaseAuth.getInstance()
                 .currentUser?.phoneNumber, null,
-            "User is off the route" +
+            "User is off the route " +
                     "https://www.google.com/maps/search/" +
                     "?api=1&query=${location?.latitude},${location?.longitude}>.",
             null, null

@@ -287,7 +287,7 @@ class HomeFragment : Fragment() {
                 SmsManager.getDefault().sendTextMessage(
                     FirebaseAuth.getInstance()
                         .currentUser?.phoneNumber, null,
-                    "User is off the route" +
+                    "Emergency detected in " +
                             "https://www.google.com/maps/search/" +
                             "?api=1&query=${it.latitude}," +
                             "${it.longitude}>.",
