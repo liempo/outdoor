@@ -22,7 +22,7 @@ class TestViewModel: ViewModel() {
                 .accessToken(BuildConfig.MapboxApiKey)
                 .origin(origin)
                 .destination(destination)
-                .profile(DirectionsCriteria.PROFILE_DRIVING_TRAFFIC)
+                .profile(DirectionsCriteria.PROFILE_WALKING)
                 .overview(DirectionsCriteria.OVERVIEW_FULL)
                 .voiceInstructions(true)
                 .bannerInstructions(true)
