@@ -5,4 +5,4 @@
  - Firebase Storage
 
 # TODO
- - [x] Fix problem with Google Cloud Platform
+ - [ ] Fix problem with Google Cloud Platform
