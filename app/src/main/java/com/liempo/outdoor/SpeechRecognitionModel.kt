@@ -62,16 +62,16 @@ class SpeechRecognitionModel(application: Application):
 
     override fun onError(errorCode: Int) {
         error.value = when (errorCode) {
-            ERROR_AUDIO -> "error_audio_error"
-            ERROR_CLIENT -> "error_client"
-            ERROR_INSUFFICIENT_PERMISSIONS -> "error_permission"
-            ERROR_NETWORK -> "error_network"
-            ERROR_NETWORK_TIMEOUT -> "error_timeout"
-            ERROR_NO_MATCH -> "error_no_match"
-            ERROR_RECOGNIZER_BUSY -> "error_busy"
-            ERROR_SERVER -> "error_server"
-            ERROR_SPEECH_TIMEOUT -> "error_timeout"
-            else -> "error_unknown"
+            ERROR_AUDIO -> "An audio error occurred"
+            ERROR_CLIENT -> "A client error occurred"
+            ERROR_INSUFFICIENT_PERMISSIONS -> "Insufficient permissions"
+            ERROR_NETWORK -> "There is a problem with the network"
+            ERROR_NETWORK_TIMEOUT -> "The network has timed out"
+            ERROR_NO_MATCH -> ""
+            ERROR_RECOGNIZER_BUSY -> "Recognizer is busy"
+            ERROR_SERVER -> "Unexpected error from server"
+            ERROR_SPEECH_TIMEOUT -> "The speech recognition module has timed out"
+            else -> "An unknown error has occurred"
         }
     }
 
