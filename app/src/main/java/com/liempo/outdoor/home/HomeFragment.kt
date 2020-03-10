@@ -96,30 +96,11 @@ class HomeFragment : Fragment() {
             .addCallback(viewLifecycleOwner, callback)
 
         // Setup speech model
-        speech.recognizedText.observe(viewLifecycleOwner, Observer {
-            detected_text.text = it
-        })
+        speech.recognizedText.observe(viewLifecycleOwner, Observer { text ->
+            detected_text.text = text
 
-        speech.error.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(context, "Error: $it",
-                Toast.LENGTH_SHORT).show()
-        })
-
-        speech.rmsValue.observe(viewLifecycleOwner, Observer {
-            rms_view.setRms(it)
-        })
-
-        speech.isListening.observe(viewLifecycleOwner, Observer {
-            // Ignore if still listening
-            if (it) return@Observer
-            Timber.i("triggered")
-
-            // Animate rms view, loading
-            rms_view.transform()
-
-            // Get keyword else exit
-            val text = speech.recognizedText.value
-            if (text?.toLowerCase() == "go home") {
+            Timber.d("Detected text: $text")
+            if (text.toLowerCase() == "go home") {
                 FirebaseFirestore.getInstance().collection("profile")
                     .document(FirebaseAuth.getInstance().uid!!).get()
                     .addOnSuccessListener { snapshot ->
@@ -136,7 +117,13 @@ class HomeFragment : Fragment() {
                     }
             } else {
                 val keyword = model.extractKeyword(text)
-                    ?: return@Observer
+                if (keyword == null) {
+                    Timber.d("Keyword is null. Exiting.")
+                    return@Observer
+                }
+
+                tts.speak("Finding a $keyword nearby...", QUEUE_ADD,
+                    null, null)
 
                 // Get the last known location
                 fused.lastLocation.addOnSuccessListener { loc ->
@@ -146,12 +133,36 @@ class HomeFragment : Fragment() {
                     )
 
                     rms_view.startIdleInterpolation()
-                }
+                }.addOnFailureListener { e -> Timber.e(e) }
             }
         })
 
+        speech.error.observe(viewLifecycleOwner, Observer {
+            tts.speak(it, QUEUE_ADD,
+                null, null)
+
+            Toast.makeText(context, "Error: $it",
+                Toast.LENGTH_SHORT).show()
+        })
+
+        speech.rmsValue.observe(viewLifecycleOwner, Observer {
+            rms_view.setRms(it)
+        })
+
+        speech.isListening.observe(viewLifecycleOwner, Observer {
+            // Ignore if still listening
+            if (it) return@Observer
+
+            // Animate rms view, loading
+            rms_view.transform()
+
+            // Get keyword else exit
+
+        })
+
         model.place.observe(viewLifecycleOwner, Observer {
-            if (it == null) return@Observer
+            if (it == null)
+                return@Observer
 
             // Get place LatLng
             val request = FetchPlaceRequest
@@ -162,7 +173,8 @@ class HomeFragment : Fragment() {
             places.fetchPlace(request).addOnSuccessListener { place ->
                 val placeName = place.place.name!!
                 detected_text.text = placeName
-                tts.speak(placeName, QUEUE_ADD, null, null)
+                tts.speak("Navigating to $placeName", QUEUE_ADD,
+                    null, null)
 
                 val dest = Point.fromLngLat(
                     place.place.latLng!!.longitude,
@@ -177,10 +189,11 @@ class HomeFragment : Fragment() {
                 }
             }.addOnFailureListener { e ->
                 Timber.e(e, "Error Fetching $it")
+
                 if (e is ApiException) {
                     Snackbar.make(rms_cardview,
-                        "Exceed the Places API Quota.",
-                        Snackbar.LENGTH_SHORT)
+                            "Exceed the Places API Quota.",
+                            Snackbar.LENGTH_SHORT)
                         .show()
                 }
 
@@ -281,6 +294,9 @@ class HomeFragment : Fragment() {
             .sensibility(2.0f)
         shake = ShakeDetector(shakeOptions).start(context) {
             fused.lastLocation.addOnSuccessListener {
+                tts.speak("SMS has been sent to your guardian, please stay where you are.",
+                    QUEUE_ADD, null, null)
+
                 Toast.makeText(context,
                     "Sending notifcation to guardian",
                     Toast.LENGTH_LONG).show()
@@ -289,7 +305,8 @@ class HomeFragment : Fragment() {
                         .currentUser?.phoneNumber, null,
                     "Emergency detected in " +
                             "https://www.google.com/maps/search/" +
-                            "?api=1&query=${it.latitude}," +
+                            "?" +
+                            "=1&query=${it.latitude}," +
                             "${it.longitude}>.",
                     null, null
                 )
