@@ -132,6 +132,11 @@ class NavigationActivity : AppCompatActivity(),
         nav_view.onLowMemory()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        nav_view.stopNavigation()
+    }
+
     override fun onProgressChange(location: Location?, routeProgress: RouteProgress?) {
         Timber.d("Emergency: $emergency")
         if (emergency) {
